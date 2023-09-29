@@ -4,6 +4,7 @@ import sys
 import subprocess
 import shutil
 import time
+import fcntl
 import user
 import requests
 from requests.exceptions import RequestException
@@ -55,8 +56,9 @@ def main() -> None:
         server_repo_dir: str = os.path.join(SERVERS_DIR, str(latest_version))
         lock_file_path: str = os.path.join(server_repo_dir, LOCK_FILE_NAME)
         if os.path.exists(lock_file_path):
-            global lock_file
-            lock_file = open(lock_file_path, "r")
+            # Just leak the handle, we need it till the process dies
+            lock_file = os.open(lock_file_path, os.O_RDONLY)
+            fcntl.flock(lock_file, fcntl.LOCK_SH | fcntl.LOCK_NB)
             break
         attempts += 1
         time.sleep(10)

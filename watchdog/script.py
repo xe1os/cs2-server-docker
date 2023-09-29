@@ -5,6 +5,7 @@ import subprocess
 import shutil
 import time
 import pathlib
+import fcntl
 import user
 import requests
 from requests.exceptions import RequestException
@@ -46,12 +47,11 @@ def delete_unused_versions() -> None:
         if version == latest_installed_version:
             continue
         lock_file_path: str = os.path.join(SERVERS_DIR, str(version), LOCK_FILE_NAME)
-        lock_file_exists: bool = os.path.isfile(lock_file_path)
-        if lock_file_exists:
-            try:
-                os.remove(lock_file_path)
-            except:
-                continue
+        try:
+            lock_file = open(lock_file_path, 'w')
+            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except:
+            continue
         shutil.rmtree(os.path.join(SERVERS_DIR, str(version)))
 
 def link_dir(source: str, target: str) -> None:
