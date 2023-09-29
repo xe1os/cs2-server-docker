@@ -50,9 +50,9 @@ def delete_unused_versions() -> None:
         try:
             lock_file = open(lock_file_path, 'w')
             fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            shutil.rmtree(os.path.join(SERVERS_DIR, str(version)))
         except:
-            continue
-        shutil.rmtree(os.path.join(SERVERS_DIR, str(version)))
+            pass
 
 def link_dir(source: str, target: str) -> None:
     if os.path.lexists(target):
