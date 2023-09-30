@@ -40,7 +40,8 @@ This is an example `hooks.py` from `/hooks`.
 
 ```Py
 def post_build(version: int, dir: str) -> None:
-    pass
+    print("The server is running version", version)
+    add_custom_addons(dir)
 
 def pre_run(version: int, dir: str, args: list[str]) -> None:
     args.append('+hostname cs2-server-docker')
