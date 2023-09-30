@@ -35,9 +35,10 @@ def fetch_latest_version() -> int:
 
 def collect_installed_versions() -> list[int]:
     versions: list[int] = []
-    for it in os.listdir(SERVERS_DIR):
-        if it.isdigit() and os.path.isdir(os.path.join(SERVERS_DIR, it)):
-            versions.append(int(it))
+    if os.path.isdir(SERVERS_DIR):
+        for it in os.listdir(SERVERS_DIR):
+            if it.isdigit():
+                versions.append(int(it))
     return versions
 
 def delete_unused_versions() -> None:
