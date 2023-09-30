@@ -22,7 +22,8 @@ STEAMCMD_DIR: str = '/repo/steamcmd'
 DOT_STEAM_DIR: str = '/home/server/.steam'
 SERVER_DIR: str = '/home/server/cs2'
 LOCK_FILE_NAME: str = 'watchdog.lock'
-CS2_BIN_PATH: str = os.path.join(SERVER_DIR, 'game/bin/linuxsteamrt64/cs2')
+CS2_BIN_RELATIVE_PATH: str = 'game/bin/linuxsteamrt64/cs2'
+CS2_BIN_PATH: str = os.path.join(SERVER_DIR, CS2_BIN_RELATIVE_PATH)
 
 def fetch_latest_version() -> int:
     response = requests.get('https://api.steampowered.com/ISteamApps/UpToDateCheck/v1?version=0&format=json&appid=730')
@@ -70,7 +71,16 @@ def main() -> None:
             break
         attempts += 1
         time.sleep(10)
+
     symlink_dir(server_repo_dir, SERVER_DIR)
+
+    # CS2 seems to be setting it's own CWD based on the binary location,
+    # so a symlink will not work here. At the time of writing the binary
+    # is 112K, so it's not a big deal to copy it over.
+    os.unlink(CS2_BIN_PATH)
+    cs2_bin_repo_path = os.path.join(server_repo_dir, CS2_BIN_RELATIVE_PATH)
+    shutil.copy2(cs2_bin_repo_path, CS2_BIN_PATH)
+
     os.makedirs(os.path.join(DOT_STEAM_DIR, 'sdk64'), exist_ok=True)
     shutil.copyfile(
         os.path.join(STEAMCMD_DIR, 'linux64', 'steamclient.so'), 
