@@ -49,9 +49,13 @@ def delete_unused_versions() -> None:
             continue
         lock_file_path: str = os.path.join(SERVERS_DIR, str(version), LOCK_FILE_NAME)
         try:
-            lock_file = open(lock_file_path, 'w')
-            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            shutil.rmtree(os.path.join(SERVERS_DIR, str(version)))
+            if os.path.isfile(lock_file_path):
+                lock_file = open(lock_file_path, 'w')
+                fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                # This needs to happen while we still have the lock
+                shutil.rmtree(os.path.join(SERVERS_DIR, str(version)))
+            else:
+                shutil.rmtree(os.path.join(SERVERS_DIR, str(version)))
         except:
             pass
 
