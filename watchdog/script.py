@@ -92,7 +92,7 @@ def update_if_needed() -> None:
         '+@bMetricsEnabled', '0',
         '+force_install_dir', INSTALL_DIR,
         '+login', STEAM_USERNAME, STEAM_PASSWORD,
-        '+app_update', '730',# 'validate',
+        '+app_update', '730', 'validate',
         '+quit'
     ])
     if steamcmd_result.returncode == 0:
