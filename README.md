@@ -4,6 +4,8 @@
 
 ## Watchdog
 
+Watchdog's job is to keep the server up to date. Whenever a new version is available, it hard links the game files into a new folder. Outdated versions that are no longer needed by any server get removed automatically.
+
 ### Environment
 
 Currently the anonymous account can't download CS2.
@@ -27,8 +29,6 @@ def post_update(version: int, dir: str) -> None:
 
 ## Server
 
-At the moment it just starts a default server on Inferno.
-
 ### Volumes
 
 - `/repo` - This is meant to be shared with the watchdog.
@@ -40,7 +40,11 @@ This is an example `hooks.py` from `/hooks`.
 
 ```Py
 def post_build(version: int, dir: str) -> None:
-    print("The server was just built")
+    pass
+
+def pre_run(version: int, dir: str, args: list[str]) -> None:
+    args.append('+hostname cs2-server-docker')
+    args.append('+map de_inferno')
 ```
 
 ## Recommended setup
