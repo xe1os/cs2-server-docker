@@ -14,10 +14,11 @@ Currently the anonymous account can't download CS2.
 ### Volumes
 
 - `/repo` - Everything that's meant to persist. Server files, steamcmd, etc.
+- `/hooks` - Contains `hooks.py` and your other python dependencies.
 
 ### Hooks
 
-Override the `/scripts/user.py` file in the container to access hooks.
+This is an example `hooks.py` from `/hooks`. 
 
 ```Py
 def post_update(version: int, dir: str) -> None:
@@ -31,10 +32,11 @@ At the moment it just starts a default server on Inferno.
 ### Volumes
 
 - `/repo` - This is meant to be shared with the watchdog.
+- `/hooks` - Contains `hooks.py` and your other python dependencies.
 
 ### Hooks
 
-Override the `/scripts/user.py` file in the container to access hooks.
+This is an example `hooks.py` from `/hooks`. 
 
 ```Py
 def post_build(version: int, dir: str) -> None:
@@ -71,4 +73,8 @@ cp images/server/hooks.py hooks/server
 
 docker build --build-arg UID=$WATCHDOG_IDS --build-arg GID=$WATCHDOG_IDS -t cs2-watchdog images/watchdog
 docker build --build-arg UID=$SERVER_IDS --build-arg GID=$SERVER_IDS -t cs2-server images/server
+
+# Fill in STEAM_USERNAME and STEAM_PASSWORD with a throwaway account that has CS2 added to their library.
+# I'd recommend disabling steam guard to avoid issues.
+nano docker-compose.yml
 ```
