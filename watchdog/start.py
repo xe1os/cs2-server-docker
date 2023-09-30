@@ -6,9 +6,13 @@ import shutil
 import time
 import pathlib
 import fcntl
-import hooks
 import requests
 from requests.exceptions import RequestException
+
+try:
+    import hooks
+except:
+    pass
 
 def signal_handler(sig, frame):
     sys.exit(0)
@@ -98,10 +102,8 @@ def update_if_needed() -> None:
     if steamcmd_result.returncode == 0:
         version_dir: str = os.path.join(SERVERS_DIR, str(latest_version))
         link_dir(INSTALL_DIR, version_dir)
-        try:
+        if hasattr(hooks, 'post_update'):
             hooks.post_update(version=latest_version, dir=version_dir)
-        except:
-            pass
         lock_file_path: str = os.path.join(version_dir, LOCK_FILE_NAME)
         pathlib.Path(lock_file_path).touch()
 
