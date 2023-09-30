@@ -5,9 +5,13 @@ import subprocess
 import shutil
 import time
 import fcntl
-import hooks
 import requests
 from requests.exceptions import RequestException
+
+try:
+    import hooks
+except:
+    pass
 
 def signal_handler(sig, frame):
     sys.exit(0)
@@ -71,15 +75,18 @@ def main() -> None:
     shutil.copyfile(
         os.path.join(STEAMCMD_DIR, 'linux64', 'steamclient.so'), 
         os.path.join(DOT_STEAM_DIR, 'sdk64', 'steamclient.so'))
-    try:
+    
+    if hasattr(hooks, 'post_build'):
         hooks.post_build(version=latest_version, dir=SERVER_DIR)
-    except:
-        pass
-    subprocess.run([
-        CS2_BIN_PATH,
-        '-dedicated',
-        '+map de_inferno'
-    ])
+
+    args: list[str] = ['-dedicated']
+    if hasattr(hooks, 'pre_run'):
+        hooks.pre_run(version=latest_version, dir=SERVER_DIR, args=args)
+    else:
+        args.append('+hostname cs2-server-docker')
+        args.append('+map de_inferno')
+
+    subprocess.run([CS2_BIN_PATH] + args)
 
 if __name__ == '__main__':
     main()

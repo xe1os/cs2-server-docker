@@ -16,4 +16,3 @@ services:
     volumes:
       - ./repo:/repo
       - ./hooks/server:/hooks
-    command: tail -f /dev/null
