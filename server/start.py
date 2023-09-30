@@ -5,7 +5,7 @@ import subprocess
 import shutil
 import time
 import fcntl
-import user
+import hooks
 import requests
 from requests.exceptions import RequestException
 
@@ -14,7 +14,7 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGTERM, signal_handler)
 
 SERVERS_DIR: str = '/repo/servers'
-STEAMCMD_DIR: str = '/repo/steamcmd' 
+STEAMCMD_DIR: str = '/repo/steamcmd'
 DOT_STEAM_DIR: str = '/home/server/.steam'
 SERVER_DIR: str = '/home/server/cs2'
 LOCK_FILE_NAME: str = 'watchdog.lock'
@@ -52,7 +52,7 @@ def main() -> None:
     attempts = 0
     while True:
         if attempts % 18 == 0:
-            latest_version: int = fetch_latest_version()
+            latest_version = fetch_latest_version()
         server_repo_dir: str = os.path.join(SERVERS_DIR, str(latest_version))
         lock_file_path: str = os.path.join(server_repo_dir, LOCK_FILE_NAME)
         if os.path.exists(lock_file_path):
@@ -72,7 +72,7 @@ def main() -> None:
         os.path.join(STEAMCMD_DIR, 'linux64', 'steamclient.so'), 
         os.path.join(DOT_STEAM_DIR, 'sdk64', 'steamclient.so'))
     try:
-        user.post_build(version=latest_version, dir=SERVER_DIR)
+        hooks.post_build(version=latest_version, dir=SERVER_DIR)
     except:
         pass
     subprocess.run([

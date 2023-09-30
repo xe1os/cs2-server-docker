@@ -6,7 +6,7 @@ import shutil
 import time
 import pathlib
 import fcntl
-import user
+import hooks
 import requests
 from requests.exceptions import RequestException
 
@@ -17,7 +17,7 @@ signal.signal(signal.SIGTERM, signal_handler)
 SERVERS_DIR: str = '/repo/servers'
 INSTALL_DIR: str = os.path.join(SERVERS_DIR, 'latest')
 STEAMCMD_DIR: str = '/repo/steamcmd'
-STEAMCMD_INITIAL_DIR: str = '/home/steam/steamcmd'
+STEAMCMD_INITIAL_DIR: str = '/app/steamcmd'
 STEAMCMD_PATH: str = os.path.join(STEAMCMD_DIR, 'steamcmd.sh')
 LOCK_FILE_NAME: str = 'watchdog.lock'
 STEAM_USERNAME: str = str(os.environ.get('STEAM_USERNAME'))
@@ -99,7 +99,7 @@ def update_if_needed() -> None:
         version_dir: str = os.path.join(SERVERS_DIR, str(latest_version))
         link_dir(INSTALL_DIR, version_dir)
         try:
-            user.post_update(version=latest_version, dir=version_dir)
+            hooks.post_update(version=latest_version, dir=version_dir)
         except:
             pass
         lock_file_path: str = os.path.join(version_dir, LOCK_FILE_NAME)
@@ -108,7 +108,6 @@ def update_if_needed() -> None:
 def main() -> None:
     if not os.path.exists(STEAMCMD_PATH):
         shutil.copytree(STEAMCMD_INITIAL_DIR, STEAMCMD_DIR, dirs_exist_ok=True)
-
     while True:
         update_if_needed()
         delete_unused_versions()

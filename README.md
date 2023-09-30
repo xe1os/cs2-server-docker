@@ -17,7 +17,7 @@ Currently the anonymous account can't download CS2.
 
 ### Hooks
 
-Override the `/user.py` file in the container to access hooks.
+Override the `/scripts/user.py` file in the container to access hooks.
 
 ```Py
 def post_update(version: int, dir: str) -> None:
@@ -34,34 +34,41 @@ At the moment it just starts a default server on Inferno.
 
 ### Hooks
 
-Override the `/user.py` file in the container to access hooks.
+Override the `/scripts/user.py` file in the container to access hooks.
 
 ```Py
 def post_build(version: int, dir: str) -> None:
     print("The server was just built")
 ```
 
-## Example docker compose
+## Recommended setup
 
-```yml
-version: "3.9"
-services:
-  cs2-watchdog:
-    image: cs2-watchdog:latest
-    container_name: cs2-watchdog
-    restart: unless-stopped
-    environment:
-      - STEAM_USERNAME=
-      - STEAM_PASSWORD=
-    volumes:
-      - ./repo:/repo
-      - ./watchdog-user.py:/user.py
-  cs2-server:
-    image: cs2-server:latest
-    container_name: cs2-server
-    restart: unless-stopped
-    network_mode: host
-    volumes:
-      - ./repo:/repo
-      - ./server-user.py:/user.py
+```bash
+WATCHDOG_IDS=5000
+SERVER_IDS=5001
+
+sudo groupadd -g $WATCHDOG_IDS cs2-watchdog
+sudo useradd -u $WATCHDOG_IDS -g $WATCHDOG_IDS -M -s /bin/false cs2-watchdog
+sudo groupadd -g $SERVER_IDS cs2-server
+sudo useradd -u $SERVER_IDS -g $SERVER_IDS -M -s /bin/false cs2-server
+
+cd ~
+mkdir gameservers
+cd gameservers
+
+git clone https://github.com/Szwagi/cs2-server-docker.git images
+
+cp images/example-docker-compose.yml docker-compose.yml
+
+mkdir repo
+chgrp watchdog repo
+chmod g+s repo
+
+mkdir -p hooks/watchdog
+mkdir -p hooks/server
+cp images/watchdog/hooks.py hooks/watchdog
+cp images/server/hooks.py hooks/server
+
+docker build --build-arg UID=$WATCHDOG_IDS --build-arg GID=$WATCHDOG_IDS -t cs2-watchdog images/watchdog
+docker build --build-arg UID=$SERVER_IDS --build-arg GID=$SERVER_IDS -t cs2-server images/server
 ```

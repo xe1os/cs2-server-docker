@@ -5,15 +5,17 @@ RUN apt-get update \
         python3 \
         python3-requests
 
-ENV PUID 1000
-RUN useradd -u "${PUID}" -m "server"
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g $GID -o "server" \
+    && useradd -u $UID -g $GID -m -o "server" \
+    && mkdir /hooks \
+    && mkdir /app
+
+COPY start.py /app
+
+COPY hooks.py /hooks
+ENV PYTHONPATH "/hooks:${PYTHONPATH}"
 
 USER server
-WORKDIR /home/server
-
-RUN ln -s /user.py user.py
-
-COPY script.py .
-COPY user.py /
-
-CMD [ "python3", "script.py" ]
+CMD [ "python3", "/app/start.py" ]

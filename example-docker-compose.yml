@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  cs2-watchdog:
+    image: cs2-watchdog:latest
+    restart: unless-stopped
+    environment:
+      - STEAM_USERNAME=
+      - STEAM_PASSWORD=
+    volumes:
+      - ./repo:/repo
+      - ./hooks/watchdog:/hooks
+  cs2-server:
+    image: cs2-server:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./repo:/repo
+      - ./hooks/server:/hooks
+    command: tail -f /dev/null
