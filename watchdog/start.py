@@ -35,7 +35,8 @@ def fetch_latest_version() -> int:
     response = response['response']
     if not response['success']:
         raise RequestException('steam api response says it failed')
-    return int(response['required_version'])
+    message = response['message']
+    return ''.join([ch for ch in message if ch.isdigit() or ch == '.' or ch == '+'])
 
 def collect_installed_versions() -> list[int]:
     versions: list[int] = []
