@@ -68,8 +68,7 @@ git clone https://github.com/Szwagi/cs2-server-docker.git images
 cp images/example-docker-compose.yml docker-compose.yml
 
 mkdir repo
-chgrp watchdog repo
-chmod g+s repo
+chown cs2-watchdog:cs2-watchdog repo
 
 mkdir -p hooks/watchdog
 mkdir -p hooks/server
