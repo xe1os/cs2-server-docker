@@ -28,15 +28,12 @@ STEAM_USERNAME: str = str(os.environ.get('STEAM_USERNAME'))
 STEAM_PASSWORD: str = str(os.environ.get('STEAM_PASSWORD'))
 
 def fetch_latest_version() -> int:
-    response = requests.get('https://api.steampowered.com/ISteamApps/UpToDateCheck/v1?version=0&format=json&appid=730')
+    response = requests.get('https://api.steamcmd.net/v1/info/730')
     if response.status_code != 200:
-        raise RequestException('steam api response status is not 200')
+        raise RequestException('steamcmd api response status is not 200')
     response = response.json()
-    response = response['response']
-    if not response['success']:
-        raise RequestException('steam api response says it failed')
-    message = response['message']
-    return ''.join([ch for ch in message if ch.isdigit() or ch == '.' or ch == '+'])
+    response = response['data']['730']
+    return response['_change_number']
 
 def collect_installed_versions() -> list[int]:
     versions: list[int] = []

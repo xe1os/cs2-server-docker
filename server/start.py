@@ -26,15 +26,12 @@ CS2_BIN_RELATIVE_PATH: str = 'game/bin/linuxsteamrt64/cs2'
 CS2_BIN_PATH: str = os.path.join(SERVER_DIR, CS2_BIN_RELATIVE_PATH)
 
 def fetch_latest_version() -> int:
-    response = requests.get('https://api.steampowered.com/ISteamApps/UpToDateCheck/v1?version=0&format=json&appid=730')
+    response = requests.get('https://api.steamcmd.net/v1/info/730')
     if response.status_code != 200:
-        raise RequestException('steam api response status is not 200')
+        raise RequestException('steamcmd api response status is not 200')
     response = response.json()
-    response = response['response']
-    if not response['success']:
-        raise RequestException('steam api response says it failed')
-    message = response['message']
-    return ''.join([ch for ch in message if ch.isdigit() or ch == '.' or ch == '+'])
+    response = response['data']['730']
+    return response['_change_number']
 
 def symlink_dir(source: str, target: str) -> None:
     if os.path.lexists(target):
@@ -53,7 +50,7 @@ def symlink_dir(source: str, target: str) -> None:
             os.symlink(source_file, target_file)
 
 def main() -> None:
-    latest_version: int = -1
+    latest_version: int = 0
     server_repo_dir: str = os.path.join(SERVERS_DIR, str(latest_version))
     attempts = 0
     while True:
