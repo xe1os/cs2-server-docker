@@ -9,10 +9,20 @@ services:
     volumes:
       - ./repo:/repo
       - ./hooks/watchdog:/hooks
+      
   cs2-server:
     image: cs2-server:latest
     restart: unless-stopped
-    network_mode: host
+    environment:
+      - SERVER_NAME=
+      - MAP=de_inferno
+      - SERVER_PW=  # Set your desired server password here
+      - RCON_PW=  # Set your desired RCON password here
+      - PORT=27015  # Set your desired server port here
+      - GAME_TYPE=0  # Set your desired game type here
+      - GAME_MODE=1  # Set your desired game mode here
+      - MAX_PLAYERS=10  # Set your desired maximum player count here
     volumes:
       - ./repo:/repo
       - ./hooks/server:/hooks
+    network_mode: host
