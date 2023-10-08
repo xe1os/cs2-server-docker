@@ -18,5 +18,5 @@ def pre_run(version: int, dir: str, args: list[str]) -> None:
     args.append(f"+rcon_password {rcon_pw}")
     args.append(f"-port {port}")
     args.append(f"+gamemode {game_mode}")
-    args.append(f"+game_type {game_type}")
+    args.append(f"+gametype {game_type}")
     args.append(f"-maxplayers {max_players}")
