@@ -1,7 +1,6 @@
 version: "3.9"
 services:
   cs2-watchdog:
-    build: ./watchdog
     image: cs2-watchdog:latest
     restart: unless-stopped
     environment:
@@ -12,7 +11,6 @@ services:
       - ./hooks/watchdog:/hooks
       
   cs2-server:
-    build: ./server
     image: cs2-server:latest
     restart: unless-stopped
     environment:
