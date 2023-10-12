@@ -68,7 +68,9 @@ git clone https://github.com/xe1os/cs2-server-docker.git images
 cp images/example-docker-compose.yml docker-compose.yml
 
 mkdir repo
-sudo chown cs2-watchdog:cs2-watchdog repo && sudo chmod 777 repo
+sudo chown -R cs2-watchdog:cs2-watchdog repo
+sudo chown -R cs2-server:cs2-server repo
+sudo chmod -R 755 repo
 
 mkdir -p hooks/watchdog
 mkdir -p hooks/server
@@ -81,4 +83,5 @@ docker build --build-arg UID=$SERVER_IDS --build-arg GID=$SERVER_IDS -t cs2-serv
 # Fill in STEAM_USERNAME and STEAM_PASSWORD with a throwaway account that has CS2 added to their library.
 # I'd recommend disabling steam guard to avoid issues.
 nano docker-compose.yml
+
 ```
