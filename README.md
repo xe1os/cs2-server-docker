@@ -54,23 +54,21 @@ def pre_run(version: int, dir: str, args: list[str]) -> None:
 WATCHDOG_IDS=5000
 SERVER_IDS=5001
 
-sudo groupadd -g $WATCHDOG_IDS cs2-watchdog
-sudo useradd -u $WATCHDOG_IDS -g $WATCHDOG_IDS -M -s /bin/false cs2-watchdog
-sudo groupadd -g $SERVER_IDS cs2-server
-sudo useradd -u $SERVER_IDS -g $SERVER_IDS -M -s /bin/false cs2-server
+groupadd -g $WATCHDOG_IDS cs2-watchdog
+useradd -u $WATCHDOG_IDS -g $WATCHDOG_IDS -M -s /bin/false cs2-watchdog
+groupadd -g $SERVER_IDS cs2-server
+useradd -u $SERVER_IDS -g $SERVER_IDS -M -s /bin/false cs2-server
 
 cd ~
 mkdir gameservers
 cd gameservers
 
-git clone https://github.com/xe1os/cs2-server-docker.git images
+git clone https://github.com/Szwagi/cs2-server-docker.git images
 
 cp images/example-docker-compose.yml docker-compose.yml
 
 mkdir repo
-sudo chown -R cs2-watchdog:cs2-watchdog repo
-sudo chown -R cs2-server:cs2-server repo
-sudo chmod -R 755 repo
+chown cs2-watchdog:cs2-watchdog repo
 
 mkdir -p hooks/watchdog
 mkdir -p hooks/server
