@@ -63,7 +63,7 @@ cd ~
 mkdir gameservers
 cd gameservers
 
-git clone https://github.com/Szwagi/cs2-server-docker.git images
+git clone https://github.com/xe1os/cs2-server-docker.git images
 
 cp images/example-docker-compose.yml docker-compose.yml
 
