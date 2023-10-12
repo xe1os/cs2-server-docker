@@ -54,10 +54,10 @@ def pre_run(version: int, dir: str, args: list[str]) -> None:
 WATCHDOG_IDS=5000
 SERVER_IDS=5001
 
-groupadd -g $WATCHDOG_IDS cs2-watchdog
-useradd -u $WATCHDOG_IDS -g $WATCHDOG_IDS -M -s /bin/false cs2-watchdog
-groupadd -g $SERVER_IDS cs2-server
-useradd -u $SERVER_IDS -g $SERVER_IDS -M -s /bin/false cs2-server
+sudo groupadd -g $WATCHDOG_IDS cs2-watchdog
+sudo useradd -u $WATCHDOG_IDS -g $WATCHDOG_IDS -M -s /bin/false cs2-watchdog
+sudo groupadd -g $SERVER_IDS cs2-server
+sudo useradd -u $SERVER_IDS -g $SERVER_IDS -M -s /bin/false cs2-server
 
 cd ~
 mkdir gameservers
